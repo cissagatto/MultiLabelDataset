@@ -66,7 +66,6 @@ directories <- function(){
     dirResults = dir(folderResults)
     n_Results = length(dirResults)
   } else {
-    cat("\n|========== Creating the Results folder ==========|\n")
     dir.create(folderResults)
     setwd(folderLS)
     dirResults = dir(folderResults)
@@ -227,7 +226,7 @@ infoDataSet <- function(dataset){
   retorno$predictiveAttributes = dataset$PredictiveAttributes
   retorno$attributesTotal = dataset$AttributesTotal
   retorno$attStart = dataset$AttStart
-  retorno$attEnd = dataset$AttEndt
+  retorno$attEnd = dataset$AttEnd
   retorno$labStart = dataset$LabStart
   retorno$labEnd = dataset$LabEnd
   retorno$nominal = dataset$Nominal

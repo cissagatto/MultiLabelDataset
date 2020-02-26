@@ -11,13 +11,12 @@
 
 
 
-
-
 ####################################################
 # EXTERNAL LIBRARIES                               #
 ####################################################
-
-
+library("caret")
+library("ISLR")
+library("dplyr")
 
 
 
@@ -96,8 +95,6 @@ density <- function(classes){
 
 
 
-
-
 ##################################################################################################
 # FUNCTION DENSITY                                                                               #
 # Objective:                                                                                     #
@@ -112,7 +109,7 @@ density <- function(classes){
 #     None                                                                                       #
 ##################################################################################################
 
-cat("\n|========== START FUNCTION: Separated Labels Space and Attributes Space ==========|\n")
+cat("\n|========== START Separated Labels Space and Attributes Space ==========|\n")
 
 d = directories()
 
@@ -125,102 +122,53 @@ dados = data.frame(dataset, card, dens, dime)
 setwd(FolderRoot)
 datasets = read.csv("datasets.csv")
 
+fn = fileNames()
+ffnn = folderNames(d$folderCSV)
 
-###########################################################################################
-# 20-NG-F
-dataset= "20-NG-F"
-cat("\n", dataset)
-setwd(d$folderCSV)
-ngf = read.csv("20-NG-F.csv")
-
-# atributos
-setwd(d$folderAS)
-ngf_atributos = data.frame(ngf[21:1026])
-write.csv(ngf_atributos, "20-NG-F.csv", row.names = FALSE)
-
-# rotulos
-setwd(d$folderLS)
-ngf_classes = data.frame(ngf[,1:20])
-write.csv(ngf_classes, "20-NG-Fs.csv", row.names = FALSE)
-
-# salvando os rótulos
-rotulos = c(colnames(ngf_classes))
-setwd(d$folderL)
-write.csv(rotulos, "20-NG-F.csv")
-
-ngf_all = cbind(ngf_atributos, ngf_classes)
-setwd(d$folderCSV)
-write.csv(rotulos, "20-NG-F[correto].csv")
-
-# cardinalidade
-card = cardinality(ngf_classes)
-
-# densidade
-dens = density(ngf_classes)
-
-# dimensionalidade
-dimen = as.numeric((n_atributosAS/n_instancias))
-
-# salvando os números
-dados = rbind(dados, data.frame(dataset, n_rotulos, card, dens, dime, att_start, att_end, labels_start, 
-                                labels_end, n_instancias, n_atributosT, n_atributosAS, n_atributosLS))
-
-setwd(sf$Folder)
-write.csv(dados, "sumario_datasets.csv", append = TRUE)
-
-# limpar
-rm(ngf)
-rm(ngf_atributos)
-rm(ngf_classes)
-rm(ngf_all)
-gc()
-
-
-
-###########################################################################################
-# 20-NG-F
-dataset= "20-NG-F"
-cat("\n", dataset)
-setwd(d$folderCSV)
-ngf = read.csv("20-NG-F.csv")
-
-# atributos
-setwd(d$folderAS)
-ngf_atributos = data.frame(ngf[21:1026])
-write.csv(ngf_atributos, "20-NG-F.csv", row.names = FALSE)
-
-# rotulos
-setwd(d$folderLS)
-ngf_classes = data.frame(ngf[,1:20])
-write.csv(ngf_classes, "20-NG-Fs.csv", row.names = FALSE)
-
-# salvando os rótulos
-rotulos = c(colnames(ngf_classes))
-setwd(d$folderL)
-write.csv(rotulos, "20-NG-F.csv")
-
-ngf_all = cbind(ngf_atributos, ngf_classes)
-setwd(d$folderCSV)
-write.csv(rotulos, "20-NG-F[correto].csv")
-
-# cardinalidade
-card = cardinality(ngf_classes)
-
-# densidade
-dens = density(ngf_classes)
-
-# dimensionalidade
-dimen = as.numeric((n_atributosAS/n_instancias))
-
-# salvando os números
-dados = rbind(dados, data.frame(dataset, n_rotulos, card, dens, dime, att_start, att_end, labels_start, 
-                                labels_end, n_instancias, n_atributosT, n_atributosAS, n_atributosLS))
-
-setwd(sf$Folder)
-write.csv(dados, "sumario_datasets.csv", append = TRUE)
-
-# limpar
-rm(arts)
-rm(arts_atributos)
-rm(arts_classes)
-gc()
+i = 1
+for(i in 1:d$n_CSV){
+  cat("\n Dataset: ", fn$fileNames[i])
+  ds = datasets[i,]
+  info = infoDataSet(ds)
+  setwd(d$folderCSV)
+  tudo = read.csv(fn$fileNames[i])
+  
+  # atributos
+  setwd(d$folderAS)
+  atributos = data.frame(tudo[,info$attStart:info$attEnd])
+  write.csv(atributos, paste(ffnn$folderNames[i], ".csv"), row.names = FALSE)
+  
+  # rotulos
+  setwd(d$folderLS)
+  classes = data.frame(tudo[,info$labStart:info$labEnd])
+  write.csv(classes, paste(ffnn$folderNames[i], ".csv"), row.names = FALSE)
+  
+  # salvando os rótulos
+  rotulos = c(colnames(classes))
+  setwd(d$folderL)
+  write.csv(rotulos, paste(ffnn$folderNames[i], ".csv"))
+  
+  # cardinalidade
+  card = cardinality(classes)
+  
+  # densidade
+  dens = density(classes)
+  
+  # dimensionalidade
+  dimen = as.numeric(info$predictiveAttributes/info$instances)
+  
+  # salvando os números
+  dados = rbind(dados, data.frame(ffnn$folderNames[i], card, dens, dime))
+  setwd(sf$Folder)
+  write.csv(dados, "sumario_datasets.csv", append = TRUE)
+  
+  # limpar
+  rm(tudo)
+  rm(atributos)
+  rm(classes)
+  rm(rotulos)
+  
+  i = i + 1
+  
+  gc()
+}
