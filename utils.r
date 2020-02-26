@@ -19,6 +19,7 @@
 ####################################################
 # INTERNAL LIBRARIES                               #
 ####################################################
+library("stringr")
 
 
 
@@ -57,6 +58,8 @@ setFolder <- function(){
 # Function to set the folder according to your operational system                                #
 ##################################################################################################
 directories <- function(){
+  
+  cat("\nFunção Diretório\n")
   
   retorno = list()
 
@@ -278,9 +281,9 @@ fileNames <- function(){
 #     folderNames: a vector with folder names                                                    #
 #     numberDataSets: number of files within folder                                              #
 ##################################################################################################
-folderNames <- function(folder){
+folderNames <- function(filenames){
   result = list()
-  folderNames = c(dir(folder))
+  folderNames = filenames
   # retirando "-train.csv" do nome dos arquivos
   j = 0
   for(j in 1:length(folderNames)){

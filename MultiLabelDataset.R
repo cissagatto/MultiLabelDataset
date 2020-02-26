@@ -14,9 +14,9 @@
 ####################################################
 # EXTERNAL LIBRARIES                               #
 ####################################################
-library("caret")
-library("ISLR")
-library("dplyr")
+#library("caret")
+#library("ISLR")
+#library("dplyr")
 
 
 
@@ -123,11 +123,11 @@ setwd(FolderRoot)
 datasets = read.csv("datasets.csv")
 
 fn = fileNames()
-ffnn = folderNames(d$folderCSV)
+ffnn = folderNames(c(fn$fileNames))
 
 i = 1
 for(i in 1:d$n_CSV){
-  cat("\n Dataset: ", fn$fileNames[i])
+  cat("\n Dataset: ", fn$fileNames[i], "\n")
   ds = datasets[i,]
   info = infoDataSet(ds)
   setwd(d$folderCSV)
