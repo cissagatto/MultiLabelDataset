@@ -59,8 +59,6 @@ setFolder <- function(){
 ##################################################################################################
 directories <- function(){
   
-  cat("\nFunção Diretório\n")
-  
   retorno = list()
 
   folderResults = paste(FolderRoot, "/Results", sep="")
@@ -284,7 +282,7 @@ fileNames <- function(){
 folderNames <- function(filenames){
   result = list()
   folderNames = filenames
-  # retirando "-train.csv" do nome dos arquivos
+  # retirando "-test.csv" do nome dos arquivos
   j = 0
   for(j in 1:length(folderNames)){
     a = str_length(folderNames[j])
@@ -313,7 +311,32 @@ labelsNames <- function(dataset){
   d = directories()
   setwd(d$folderL)
   labels = data.frame(read.csv(dataset))
-  retorno$labelsNames = labelsNames
   return(labels)
 }
 
+
+
+
+
+##################################################################################################
+# FUNCTION FOLD NAMES                                                                            #
+# Objective:                                                                                     #
+#     Create folder names for each dataset                                                       #
+# Parameters:                                                                                    #
+#     fileNames: a vector with file names                                                        #
+# Return:                                                                                        #
+#     folderNames: a vector with folder names                                                    #
+#     numberDataSets: number of files within folder                                              #
+##################################################################################################
+fileNamesFinal <- function(filenames){
+  fnf = filenames
+  # adicionando ".csv" do nome dos arquivos
+  j = 1
+  for(j in 1:length(fnf)){
+    str = paste(fnf[j], ".csv", sep="")
+    fnf[j] = str
+    j = j + 1
+    gc()
+  }
+  return(fnf)
+}
