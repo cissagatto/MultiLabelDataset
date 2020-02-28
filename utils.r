@@ -13,13 +13,14 @@
 ####################################################
 # EXTERNAL LIBRARIES                               #
 ####################################################
+library("stringr")
 
 
 
 ####################################################
 # INTERNAL LIBRARIES                               #
 ####################################################
-library("stringr")
+
 
 
 
@@ -28,9 +29,11 @@ library("stringr")
 ##################################################################################################
 sistema = c(Sys.info())
 if (sistema[1] == "Linux"){
+  #Folder = paste("/home/", sistema[7], "/IPL", sep="")
   Folder = paste("/home/", sistema[7], "/MultiLabelDataset", sep="")
   setwd(Folder)
 } else {
+  #Folder = paste("C:/Users/", sistema[7], "/IPL", sep="")
   Folder = paste("C:/Users/", sistema[7], "/MultiLabelDataset", sep="")
   setwd(Folder)
 }
@@ -40,9 +43,11 @@ setFolder <- function(){
   retorno = list()
   sistema = c(Sys.info())
   if (sistema[1] == "Linux"){
+    #Folder = paste("/home/", sistema[7], "/IPL", sep="")
     Folder = paste("/home/", sistema[7], "/MultiLabelDataset", sep="")
     setwd(Folder)
   } else {
+    #Folder = paste("C:/Users/", sistema[7], "/IPL", sep="")
     Folder = paste("C:/Users/", sistema[7], "/MultiLabelDataset", sep="")
     setwd(Folder)
   }
@@ -58,6 +63,8 @@ setFolder <- function(){
 # Function to set the folder according to your operational system                                #
 ##################################################################################################
 directories <- function(){
+  
+  cat("\nDiretorios\n")
   
   retorno = list()
 
@@ -259,10 +266,10 @@ infoDataSet <- function(dataset){
 ##################################################################################################
 fileNames <- function(){
   retorno = list()
-  d = directories()
-  fileNames = c(d$dirCSV)
+  diretorios = directories()
+  fileNames = c(diretorios$dirCSV)
   retorno$fileNames = fileNames
-  retorno$numberFiles = length(fileNames)
+  retorno$numberFiles = diretorios$n_CSV
   return(retorno)
 }
 
@@ -282,7 +289,7 @@ fileNames <- function(){
 folderNames <- function(filenames){
   result = list()
   folderNames = filenames
-  # retirando "-test.csv" do nome dos arquivos
+  # retirando "-train.csv" do nome dos arquivos
   j = 0
   for(j in 1:length(folderNames)){
     a = str_length(folderNames[j])
@@ -308,9 +315,9 @@ folderNames <- function(filenames){
 #     labels: dataset labels names                                                               #
 ##################################################################################################
 labelsNames <- function(dataset){
-  d = directories()
-  setwd(d$folderL)
-  labels = data.frame(read.csv(dataset))
+  diretorios = directories()
+  setwd(diretorios$folderL)
+  labels = data.frame(read.csv(dataset), stringsAsFactors = F)
   return(labels)
 }
 
