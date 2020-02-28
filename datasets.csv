@@ -1,0 +1,2 @@
+ID,DS,Name,Domain,Instances,Labels,PredictiveAttributes ,AttributesTotal,AttStart,AttEnd,LabStart,LabEnd,Nominal,Numeric,Cardinality,Density,Diversity,Dimensionality,xn,yn,gridn,xt,yt,gridt
+1,MU,medical ,text,978,45,1449,1498,1,1449,1450,1494,,,,,,,,,,,,
