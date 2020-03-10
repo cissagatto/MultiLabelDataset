@@ -15,6 +15,8 @@
 # EXTERNAL LIBRARIES                               #
 ####################################################
 library("stringr")
+library("plyr")
+library("dplyr")
 
 
 
@@ -26,141 +28,6 @@ source("utils.r")
 sf = setFolder()
 FolderRoot = sf$Folder
 setwd(FolderRoot)
-
-
-
-##################################################################################################
-# FUNCTION INSTANCES PER LABELS                                                                  #
-# Objective:                                                                                     #
-#     Separate each instance per label of all dataset                                            #
-# Parameters:                                                                                    #
-#     None                                                                                       #
-# Return:                                                                                        #
-#     None                                                                                       #
-# Folders Created:                                                                               #
-#     /Documents/Kohonen/Datasets/InstancesPerLabels/[Dataset]                                   #
-# Files Created:                                                                                 #
-#     [label_i].csv                                                                              #
-##################################################################################################
-instancesPerLabels <- function(folderName, fileName, fileNameFinal, attStart, attEnd, labelStart, 
-                               labelEnd, instances, labels){
-  
-  cat("\n|========== FUNCTION INSTANCES PER LABELS ==========|\n")   
-  
-  # gettinf info about directories
-  diretorios = directories()
-  
-  # creating data frame to save info
-  rotulo = c(0)
-  valor = c(0)
-  total = data.frame(rotulo, valor)  
-  
-  # Create specifc folder to save the instances
-  folder0 = paste(diretorios$folderIL, "/", folderName, sep="")
-  dir.create(folder0)  
-  
-  # obtendo os nomes dos rotulos
-  nomesRotulos = data.frame(labelsNames(fileNamesFinal))
-  names(nomesRotulos) = c("numero","label")
-  nomesRotulos = nomesRotulos$label
-  
-  # Setting the folder
-  setwd(diretorios$folderCSV)
-  
-  # Oppening the file
-  arquivo = data.frame(read.csv(fileName), stringsAsFactors = F)
-  
-  # inicio dos rótulos
-  inicio = labelStart
-  
-  # fim dos rótulos
-  fim = labelEnd
-  
-  # Setting variables need in a loop
-  n = 1
-  u = 1
-  linha = 1
-  coluna = 1
-  
-  # While n <= labels then do
-  while(n<=labels){
-    
-    cat("\n|ROTULO:", n, "|")
-    conta = 0
-    dados = arquivo
-    
-    # Create a new data frame equal to original file
-    dados = arquivo[-c(1:instances),]
-    
-    # From line 1 to line 7484 do
-    for(linha in 1:instances){
-      #cat("\n\tLinha:", linha)
-      
-      # começa na primeira coluna do espaço de rótulos
-      # termina na ultima coluna do espaço de rótulos
-      # verifica linha por linha, somente depois vai para a próxima coluna
-      for(inicio in inicio){
-        #cat("\n\t\tColuna:", inicio)
-        
-        if(inicio > fim){
-          cat("\nfim do espaco de rotulos")
-        } else {
-          # if the value in this cell is equal to 1 do
-          if(arquivo[linha, inicio] == 1){
-            #cat("\n\t\t\tPertence")
-            conta = conta + 1
-            
-            # join the data frames
-            dados = rbind(dados, arquivo[linha,])
-            
-            # Setting the folder to save files
-            setwd(folder0)
-            
-            # write the file with the values of this label
-            write.csv(dados, paste(nomesRotulos[coluna], ".csv", sep=""))
-            
-          } else {
-            #cat("\n\t\t\tNão pertence")
-          } # END else arquivo linha coluna
-          
-        } # END ELSE INICIO > FIM
-        
-      } # END FOR INICIO
-      
-      # increment the line
-      linha = linha + 1
-      
-      # limpa tudo
-      gc()
-      
-    } # END FOR LINHAS/INSTANCIAS
-    
-    rotulo = nomesRotulos[u]
-    valor = conta
-    total = rbind(total, data.frame(rotulo, valor))
-    setwd(diretorios$folderSummary)
-    nome = paste(folderName, "_sumario.csv", sep="")
-    write.csv(total, nome, sep="", append = TRUE)
-    
-    # increment the column
-    coluna = coluna + 1
-    
-    #
-    inicio = inicio + 1
-    
-    # increment n
-    n = n + 1
-    
-    # increment u
-    u = u + 1
-    
-    gc()
-  } # END WHILE
-  
-  cat("\n|========== END: Separated Instances per Label Class Space ==========|\n")
-  
-  gc()
-}
 
 
 
@@ -226,129 +93,83 @@ density <- function(classes){
 
 
 
+
 ##################################################################################################
-# FUNCTION STATISTICS                                                                            #
+# FUNCTION INSTANCES PER LABELS                                                                  #
 # Objective:                                                                                     #
-#     Compute some statistics about the datasets in general                                      #
+#     Separate each instance per label of all dataset                                            #
 # Parameters:                                                                                    #
 #     None                                                                                       #
 # Return:                                                                                        #
 #     None                                                                                       #
 # Folders Created:                                                                               #
-#     /Documents/Kohonen/Datasets/Statistics[Dataset]                                            #
+#     /Documents/Kohonen/Datasets/InstancesPerLabels/[Dataset]                                   #
 # Files Created:                                                                                 #
-#    sumario.csv                                                                                 #
-#    [Statistics_Label_i].csv                                                                    #
+#     [label_i].csv                                                                              #
 ##################################################################################################
-statistics <- function(){
+instancesPerLabels <- function(id, folderName, fileName, fileNameFinal, attStart, attEnd, labelStart, 
+                               labelEnd, instances, labels, conjunto){
   
-  cat("\n|========== START FUNCTION: Statistics ==========|\n")
+  cat("\n|========== START INSTANCES PER LABELS ==========|\n")   
   
-  setwd("~/Documents/Kohonen")
+  # gett inf info about directories
+  diretorios = directories()
   
-  datasets = data.frame(read.csv("datasets.csv"))
-  
-  folder2 = "~/Documents/Kohonen/Datasets/InstancesPerLabelsClassSpace"
-  setwd(folder2)
-  dir2 = c(dir(folder2))
-  m = length(dir2)
-  
-  label = c()
-  minimo = c()
-  maximo = c()
-  media = c()
-  mediana = c()
-  porcentagem = c()
-  estatistica = data.frame(label, minimo, maximo, media, mediana, porcentagem)
-  
+  # creating data frame to save info
   rotulo = c(0)
-  instancias = c(0)
+  valor = c(0)
   porcentagem = c(0)
-  sumario = data.frame(rotulo, instancias, porcentagem)
+  total = data.frame(rotulo, valor, porcentagem)  
   
-  j = 1
-  for(j in j:m){
-    nome = dir2[j]
-    folder4 = paste("~/Documents/Kohonen/Datasets/InstancesPerLabelsClassSpace/", nome, sep="")
-    dir4 = c(dir(folder4))
-    setwd(folder4)
-    u = length(dir4)
-    a = datasets[j,]
+  # Create specifc folder to save the instances
+  folder0 = paste(diretorios$folderIL, "/", folderName, sep="")
+  dir.create(folder0)  
+  
+  # obtendo os nomes dos rotulos
+  setwd(diretorios$folderL)
+  # arts1_labels_only.csv
+  nomeArquivo = paste(folderName, "_labels_only.csv", sep="")
+  rotulosArquivo = data.frame(read.csv(nomeArquivo))
+  names(rotulosArquivo) = c("numero","label")
+  rotulosArquivo = rotulosArquivo$label
+  
+  # Setting the folder
+  setwd(diretorios$folderCSV)
+  
+  # Oppening the file
+  arquivo = data.frame(read.csv(fileName), stringsAsFactors = F)
+  
+  # inicio dos r?tulos
+  inicio = labelStart
+  
+  # fim dos r?tulos
+  fim = labelEnd
+  
+  k = 1
+  for(k in 1:labels){
+    label_ = toString(rotulosArquivo[k])
+    cat("\nRotulo:", label_)
     
-    folder5 = "~/Documents/Kohonen/Datasets/Statistics/"
-    setwd(folder5)
-    folder6 = paste(folder5, nome, sep="")
-    dir.create(folder6)
+    result = data.frame(arquivo[arquivo[inicio]==1,])
     
-    # para o rÃ³tulo de 1 atÃ© o fim
-    k = 1
-    while(k <= u){
-      setwd(folder4)
-      arquivo = read.csv(dir4[k]) 
-      arquivo$X = NULL
-      
-      totalLinhas = nrow(arquivo)
-      totalColunas = ncol(arquivo)
-      porcentagem = totalLinhas/a$Instances
-      
-      rotulo = dir4[k]
-      instancias = totalLinhas
-      sumario = rbind(sumario, data.frame(rotulo, instancias, porcentagem))
-      
-      setwd(folder6)
-      
-      # TOTAL LABELS
-      total = data.frame(apply(arquivo, 1, sum))
-      write.csv(total, "Instancia_Total.csv")
-      
-      # AVERAGE LABELS
-      media = data.frame(apply(arquivo, 1, mean))
-      write.csv(media, "Instancia_Media.csv")
-      
-      # AVERAGE LABELS
-      mediana = data.frame(apply(arquivo, 1, median))
-      write.csv(mediana, "Instancia_Mediana.csv")
-      
-      # AVERAGE LABELS
-      desvioPadrao = data.frame(apply(arquivo, 1, sd))
-      write.csv(desvioPadrao, "Instancia_Desvio.csv")
-      
-      # soma por coluna
-      somaC = data.frame(apply(arquivo, 2, sum))
-      names(somaC) = "soma"
-      
-      maxC = data.frame(apply(arquivo, 2, max))
-      names(maxC) = "maximo"
-      
-      minC = data.frame(apply(arquivo, 2, min))
-      names(minC) = "minimo"
-      
-      mediaC = data.frame(apply(arquivo, 2, mean))
-      names(mediaC) = "media"
-      
-      medianC = data.frame(apply(arquivo, 2, median))
-      names(medianC) = "mediana"
-      
-      sdC = data.frame(apply(arquivo, 2, sd))
-      names(sdC) = "desvioPadrao"
-      
-      final = cbind(somaC, maxC, minC, medianC, mediaC, sdC)
-      
-      # salvando informaÃ§Ãµes
-      nome2 = paste("Rotulos_", dir4[k], sep="")
-      write.csv(final, nome2)
-      
-      k = k + 1
-      gc()
-    }
+    setwd(folder0)
+    write.csv(result, paste(label_, "_", conjunto, "_.csv", sep=""))
     
-    write.csv(sumario, "sumario.csv")
+    rotulo = label_
+    valor = nrow(result)
+    porcentagem = valor/instances
+    total = rbind(total, data.frame(rotulo, valor, porcentagem))
     
-    j = j + 1
+    setwd(diretorios$folderSummary)
+    nome = paste(folderName, "_sumario_", conjunto, "_ipl.csv", sep="")
+    write.csv(total, nome, sep="", append = TRUE)
+    
+    inicio = inicio + 1
+    k = k + 1
     gc()
   }
   
-  cat("\n|========== END FUNCTION: Statistics ==========|\n")
+  cat("\n|========== END INSTANCES PER LABELS ==========|\n")
   
   gc()
 }
@@ -357,122 +178,174 @@ statistics <- function(){
 
 
 ##################################################################################################
-# FUNCTION INSTANCES PER LABELS CLASS SPACE                                                      #
+# FUNCTION INSTANCES PER LABELS                                                                  #
 # Objective:                                                                                     #
-#     Separated the instances for each label only for the class space                            #
+#     Separate each instance per label of all dataset                                            #
 # Parameters:                                                                                    #
 #     None                                                                                       #
 # Return:                                                                                        #
 #     None                                                                                       #
-# Folder Created:                                                                                #
-#     /Documents/Kohonen/Datasets/InstancesPerLabelsClassSpace/[Dataset]                         # 
+# Folders Created:                                                                               #
+#     /Documents/Kohonen/Datasets/InstancesPerLabels/[Dataset]                                   #
 # Files Created:                                                                                 #
 #     [label_i].csv                                                                              #
 ##################################################################################################
-instancesPerLabelsSpace <- function(folderName, fileName, fileNameFinal, attStart, attEnd, labelStart, labelEnd, instances, labels){
+instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, attStart, attEnd, labelStart, 
+                                    labelEnd, instances, labels, conjunto){
   
-  cat("\n|========== START: Separated Instances per Labels Space ==========|\n")   
+  cat("\n|========== START INSTANCES PER LABELS ==========|\n")   
   
   # gettinf info about directories
-  d = directories()
+  diretorios = directories()
   
-  # creating data frame to save info
+  # criando pasta para salvar o sumário do dataset
+  setwd(diretorios$folderSummary)
+  subFolderSu = paste(diretorios$folderSummary, "/", folderName, sep="")
+  dir.create(subFolderSu)
+  
+  # criando pasta para salvar a estatística do dataset
+  setwd(diretorios$folderStatistics)
+  subFolderSta = paste(diretorios$folderStatistics, "/", folderName, sep="")
+  dir.create(subFolderSta)
+  
+  # criando pasta para salvar as instancias por rotulo
+  setwd(diretorios$folderILS)
+  subFolderILS = paste(diretorios$folderILS, "/", folderName, sep="")
+  dir.create(subFolderILS)
+  
+  # criando data frame para salvar o total de instancias por rotulo
   rotulo = c(0)
   valor = c(0)
-  total = data.frame(rotulo, valor)  
+  porcentagem = c(0)
+  total = data.frame(rotulo, valor, porcentagem)  
   
-  # Create specifc folder to save the instances
-  folder0 = paste(d$folderILS, "/", folderName, sep="")
-  dir.create(folder0)  
+  # criando data frame para salvar o sumário do dataset
+  soma_ = c(0)
+  minimo_ = c(0)
+  maximo_ = c(0)
+  media_ = c(0)
+  mediana_ = c(0)
+  sd_ = c(0)
+  final = data.frame(soma_, minimo_, maximo_, media_, mediana_, sd_)
   
   # obtendo os nomes dos rotulos
-  nomesRotulos = data.frame(labelsNames(fileNameFinal))
-  names(nomesRotulos) = c("numero","label")
-  nomesRotulos = nomesRotulos$label
+  setwd(diretorios$folderL)
+  # arts1_labels_only.csv
+  nomeArquivo = paste(folderName, "_labels_only.csv", sep="")
+  rotulosArquivo = data.frame(read.csv(nomeArquivo))
+  names(rotulosArquivo) = c("numero","label")
+  rotulosArquivo = rotulosArquivo$label
   
   # Setting the folder
-  setwd(d$folderLS)
+  setwd(diretorios$folderLS)
+  namae = paste(folderName, "_labels_train.csv", sep="")
+  arquivo = data.frame(read.csv(namae, stringsAsFactors = F))
+ 
+  setwd(subFolderSu)
   
-  # Oppening the file
-  arquivo = data.frame(read.csv(fileName), stringsAsFactors = F)
+  # soma por linha (instancia)
+  soma1 = data.frame(apply(arquivo, 1, sum))
+  names(soma1) = c("instancias", "soma")
+  write.csv(soma1, paste("arquivo_instancia_", conjunto, ".csv", sep=""))
   
-  # inicio dos rótulos
+  # soma por coluna (rotulos)
+  soma2 = data.frame(apply(arquivo, 2, sum))
+  names(soma2) = c("rotulos", "soma")
+  write.csv(soma2, paste("arquivo_rotulo_", conjunto, ".csv", sep=""))
+  
+  # inicio dos rotulos
   inicio = labelStart
   
-  # fim dos rótulos
+  # fim dos rotulos
   fim = labelEnd
   
-  # Setting variables need in a loop
-  n = 1
-  u = 1
-  linha = 1
-  coluna = 1
-  
-  # While n <= labels then do
-  while(n<=labels){
+  # passando por todos os rótulos
+  k = 1
+  for(k in 1:labels){
     
-    cat("\n| ROTULO: ", n)
+    label_ = toString(rotulosArquivo[k])
     
-    conta = 0
+    cat("\nRotulo:", label_)
     
-    dados = arquivo
-    # Create a new data frame equal to original file
-    dados = arquivo[-c(1:instances),]
+    result = data.frame(arquivo[arquivo[k]==1,])
     
-    # From line 1 to line 7484 do
-    for(linha in 1:instances){
-      # cat("\nLinha:", linha)
-      
-      # Analize only the specific column
-      # Start in column 1
-      # After all of lines, go to the next column
-      for(coluna in coluna){
-        # cat("\nColuna:", coluna)
-        
-        # if the value in this cell is equal to 1 do
-        if(arquivo[linha, coluna] == 1){
-          
-          conta = conta + 1
-          
-          # join the data frames
-          dados = rbind(dados, arquivo[linha,])
-          
-          # Setting the folder to save files
-          setwd(folder0)
-          
-          # write the file with the values of this label
-          write.csv(dados, paste(nomesRotulos[coluna], ".csv", sep=""))
-          
-        } else {
-          
-        } # END IF/ELSE
-      } # END FOR COLUMN
-      
-      # increment the line
-      linha = linha + 1
-      gc()
-    } # END FOR LINE
+    # salvando as intancias especificas do rotulo especifico
+    setwd(subFolderILS)
+    write.csv(result, paste(label_, "_", conjunto, ".csv", sep=""))
     
-    cat("\n ROTULO =", nomesRotulos[u], "CONTA = ", conta)
-    rotulo = nomesRotulos[u]
-    valor = conta
-    total = rbind(total, data.frame(rotulo, valor))
-    setwd(folder2)
-    write.csv(total, "sumario.csv", sep="", append = TRUE)
+    # salvando informações de sumário
+    setwd(subFolderSu)
+    rotulo = label_
+    valor = nrow(result)
+    porcentagem = valor/instances
+    total = rbind(total, data.frame(rotulo, valor, porcentagem))
+    nome = paste(folderName, "_", label_, "_sumario_", conjunto, ".csv", sep="")
+    write.csv(total, nome, append = TRUE)     
     
-    # increment the column
-    coluna = coluna + 1
+    # salvando informações de estatística
+    setwd(subFolderSta)
     
-    # increment n
-    n = n + 1
+    # soma por linha
+    soma = data.frame(apply(result, 1, sum))
+    write.csv(soma, paste(label_, "_instancia_soma_", conjunto, ".csv", sep=""))
     
-    # increment u
-    u = u + 1
+    # mÃƒÂ©dia por linha
+    media = data.frame(apply(result, 1, mean))
+    write.csv(media, paste(label_, "_instancia_media_", conjunto, ".csv", sep=""))
     
+    # mediana por linha
+    mediana = data.frame(apply(result, 1, median))
+    write.csv(mediana, paste(label_, "_instancia_mediana_", conjunto, ".csv", sep=""))
+    
+    # desvio padrÃƒÂ£o por linha
+    desvioPadrao = data.frame(apply(result, 1, sd))
+    write.csv(desvioPadrao, paste(label_, "_instancia_media_", conjunto, ".csv", sep=""))
+    
+    # soma por coluna
+    soma_ = data.frame(apply(result, 2, sum))
+    names(soma_) = "soma"
+    
+    # mÃƒÂ¡ximo por coluna
+    maximo_ = data.frame(apply(result, 2, max))
+    names(maximo_) = "maximo"
+    
+    # mÃƒnimo por coluna
+    minimo_ = data.frame(apply(result, 2, min))
+    names(minimo_) = "minimo"
+    
+    # media por coluna
+    media_ = data.frame(apply(result, 2, mean))
+    names(media_) = "media"
+    
+    # mediana por coluna
+    mediana_ = data.frame(apply(result, 2, median))
+    names(mediana_) = "mediana"
+    
+    # desvio padrÃƒÂ£o por coluna
+    sd_ = data.frame(apply(result, 2, sd))
+    names(sd_) = "desvioPadrao"
+    
+    final = data.frame(soma_, minimo_, maximo_, media_, mediana_, sd_)
+    
+    nome2 = paste("estatisticas_", label_, "_", conjunto, ".csv", sep="")
+    write.table(final, nome2, row.names = TRUE, col.names = TRUE, sep=",")   
+    
+    k = k + 1
     gc()
-  } # END WHILE
+  }
   
-  cat("\n|========== END: Separated Instances per Labels Space ==========|\n")
+  setwd(folderSta)
+  arquivos = c(dir(folderSta))
+  n_arquivos = length(arquivos)
+  
+  arquivo = read.csv(paste("arquivo_rotulo_", conjunto, ".csv", sep=""))
+  names(arquivo) = c("label", "soma")
+  n = nrow(arquivo)
+  teste = count(arquivo, vars=arquivo$soma)
+  names(teste) = c("soma", "frequencia")
+  write.table(teste, paste("frequencia_", conjunto, ".csv", sep=""), col.names = TRUE)
+  
+  cat("\n|========== END INSTANCES PER LABELS ==========|\n")
   
   gc()
 }
