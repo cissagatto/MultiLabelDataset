@@ -61,6 +61,10 @@ dime = c(0)
 instancias = c(0)
 dados = data.frame(dataset, card, dens, dime, instancias)
 
+
+####################################################
+# Separando os espaços                             #
+####################################################
 i = 1
 for(i in 1:diretorios$n_CSV){
   cat("\n Dataset: ", fn[i], "\n")
@@ -121,6 +125,10 @@ for(i in 1:diretorios$n_CSV){
   gc()
 }
 
+
+##################################################################
+# Separando as instancias por Label e gerando estatísticas       #
+##################################################################
 j = 1
 for(j in 1:diretorios$n_CSV){
   cat("\n Dataset: ", fn[j], "\n")
