@@ -193,33 +193,39 @@ instancesPerLabels <- function(id, folderName, fileName, fileNameFinal, attStart
 instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, attStart, attEnd, labelStart, 
                                     labelEnd, instances, labels, conjunto){
   
-  cat("\n|========== START INSTANCES PER LABELS ==========|\n")   
+  cat("\n|========== START INSTANCES PER LABELS SPACE ==========|\n")   
   
   # gettinf info about directories
+  cat("\n\tobtendo diretorios")
   diretorios = directories()
   
   # criando pasta para salvar o sumário do dataset
+  cat("\n\tcriando pasta sumario")
   setwd(diretorios$folderSummary)
   subFolderSu = paste(diretorios$folderSummary, "/", folderName, sep="")
   dir.create(subFolderSu)
   
   # criando pasta para salvar a estatística do dataset
+  cat("\n\tcriando pasta estatistica")
   setwd(diretorios$folderStatistics)
   subFolderSta = paste(diretorios$folderStatistics, "/", folderName, sep="")
   dir.create(subFolderSta)
   
   # criando pasta para salvar as instancias por rotulo
+  cat("\n\tcriando pasta ILS")
   setwd(diretorios$folderILS)
   subFolderILS = paste(diretorios$folderILS, "/", folderName, sep="")
   dir.create(subFolderILS)
   
   # criando data frame para salvar o total de instancias por rotulo
+  cat("\n\tcriando data frame total")
   rotulo = c(0)
   valor = c(0)
   porcentagem = c(0)
   total = data.frame(rotulo, valor, porcentagem)  
   
   # criando data frame para salvar o sumário do dataset
+  cat("\n\tcriando data frame final")
   soma_ = c(0)
   minimo_ = c(0)
   maximo_ = c(0)
@@ -229,6 +235,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   final = data.frame(soma_, minimo_, maximo_, media_, mediana_, sd_)
   
   # obtendo os nomes dos rotulos
+  cat("\n\tobtendo os nomes dos rotulos")
   setwd(diretorios$folderL)
   # arts1_labels_only.csv
   nomeArquivo = paste(folderName, "_labels_only.csv", sep="")
@@ -237,27 +244,22 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   rotulosArquivo = rotulosArquivo$label
   
   # Setting the folder
+  cat("\n\tabrindo arquivo")
   setwd(diretorios$folderLS)
-  namae = paste(folderName, "_labels_train.csv", sep="")
+  # corel-5k-sparse_labels_test
+  namae = paste(folderName, "_labels_test.csv", sep="")
   arquivo = data.frame(read.csv(namae, stringsAsFactors = F))
  
+  cat("\n\tsomando linhas")
   setwd(subFolderSu)
-  
   # soma por linha (instancia)
   soma1 = data.frame(apply(arquivo, 1, sum))
-  names(soma1) = c("instancias", "soma")
   write.csv(soma1, paste("arquivo_instancia_", conjunto, ".csv", sep=""))
   
   # soma por coluna (rotulos)
+  cat("\n\tsomando colunas")
   soma2 = data.frame(apply(arquivo, 2, sum))
-  names(soma2) = c("rotulos", "soma")
   write.csv(soma2, paste("arquivo_rotulo_", conjunto, ".csv", sep=""))
-  
-  # inicio dos rotulos
-  inicio = labelStart
-  
-  # fim dos rotulos
-  fim = labelEnd
   
   # passando por todos os rótulos
   k = 1
@@ -334,18 +336,23 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     gc()
   }
   
-  setwd(folderSta)
-  arquivos = c(dir(folderSta))
+  cat("\n\tobtendo arquivos pasta estatistica")
+  setwd(subFolderSu)
+  arquivos = c(dir(subFolderSu))
   n_arquivos = length(arquivos)
   
+  cat("\n\tabrindo arquivo")
+  # arquivo_rotulo_train
   arquivo = read.csv(paste("arquivo_rotulo_", conjunto, ".csv", sep=""))
+  
   names(arquivo) = c("label", "soma")
   n = nrow(arquivo)
   teste = count(arquivo, vars=arquivo$soma)
   names(teste) = c("soma", "frequencia")
+  cat("\n\tsalvando frequencia arquivo")
   write.table(teste, paste("frequencia_", conjunto, ".csv", sep=""), col.names = TRUE)
   
-  cat("\n|========== END INSTANCES PER LABELS ==========|\n")
+  cat("\n|========== END INSTANCES PER LABELS SPACE ==========|\n")
   
   gc()
 }
