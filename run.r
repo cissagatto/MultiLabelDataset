@@ -22,7 +22,12 @@ library("stringr")
 # INTERNAL LIBRARIES                               #
 ####################################################
 source("utils.r")
-source("MultiLabelDataset.R")
+source("MultiLabelDataset.r")
+
+
+####################################################
+# PASTA DE TRABALHO ATUAL                           #
+####################################################
 sf = setFolder()
 FolderRoot = sf$Folder
 setwd(FolderRoot)
@@ -34,14 +39,20 @@ setwd(FolderRoot)
 # EXECUTE                                          #
 ####################################################
 diretorios = directories()
+
 # escolher TIPO igual a TRAIN ou TEST ou ALL
+# TRAIN = conjunto de dados de treino
+# TEST = conjunto de dados de teste
+# ALL = todo o conjunto de dados
 conjunto = "train"
+
 fin = c(diretorios$dirCSV)
 fon = folderNames(c(fn), tipo = conjunto)
 fnf = fileNamesFinal(c(fon))
 
 setwd(FolderRoot)
-datasets = read.csv("datasets.csv")
+nome_ = paste("datasets-", conjunto, ".csv", sep="")
+datasets = read.csv(nome)
 
 dataset = c(0)
 card = c(0)
@@ -63,13 +74,13 @@ for(i in 1:diretorios$n_CSV){
   cat("\nSeparando os atributos previsores!")
   setwd(diretorios$folderAS)
   atributos = data.frame(tudo[,info$attStart:info$attEnd])
-  write.csv(atributos, paste(fon[i], "_attributes_", conjunto, "_.csv", sep=""), row.names = FALSE)
+  write.csv(atributos, paste(fon[i], "_attributes_", conjunto, ".csv", sep=""), row.names = FALSE)
   
   # atributos alvo
   cat("\nSeparando os atributos alvo!")
   setwd(diretorios$folderLS)
   classes = data.frame(tudo[,info$labStart:info$labEnd])
-  write.csv(classes, paste(fon[i], "_labels_", conjunto, "_.csv", sep=""), row.names = FALSE)
+  write.csv(classes, paste(fon[i], "_labels_", conjunto, ".csv", sep=""), row.names = FALSE)
   
   # salvando os rotulos
   cat("\nSeparando os nomes dos atributos alvo!")
@@ -94,7 +105,7 @@ for(i in 1:diretorios$n_CSV){
   dataset = fn[i]
   dados = rbind(dados, data.frame(dataset, card, dens, dime, instancias))
   setwd(sf$Folder)
-  write.csv(dados, "_sumario_datasets_", conjunto, "_.csv", append = TRUE)
+  write.csv(dados, "sumario_datasets_", conjunto, ".csv", append = TRUE)
   
   # limpar
   cat("\nLimpando os objetos criados!")
@@ -114,14 +125,11 @@ j = 1
 for(j in 1:diretorios$n_CSV){
   cat("\n Dataset: ", fn[j], "\n")
   ds = datasets[j,]
-  info = infoDataSet(ds)
-  
+  info = infoDataSet(ds)  
   instancesPerLabels(ds$ID[j], fon[j], fn[j], fnf[j], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, 
-                     ds$Labels, conjunto)
-  
+                     ds$Labels, conjunto)  
   instancesPerLabelsSpace(ds$ID[j], fon[j], fn[j], fnf[j], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, 
-                          ds$Labels, conjunto)
-  
+                          ds$Labels, conjunto)  
   j = j + 1
   gc()
 }
