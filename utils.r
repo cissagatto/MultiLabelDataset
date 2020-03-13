@@ -57,6 +57,7 @@ setFolder <- function(){
 
 
 
+
 ##################################################################################################
 # Function to set the folder according to your operational system                                #
 ##################################################################################################
@@ -183,20 +184,7 @@ directories <- function(){
     dirCSV = dir(folderCSV)
     n_CSV = length(dirCSV)
   }
-  
-  folderAlone = paste(FolderRoot, "/Datasets/Alone", sep="")
-  if(dir.exists(folderAlone) == TRUE){
-    setwd(folderAlone)
-    dirAlone = dir(folderAlone)
-    n_Alone = length(dirAlone)
-  } else {
-    dir.create(folderAlone)
-    setwd(folderAlone)
-    dirAlone = dir(folderAlone)
-    n_Alone = length(dirAlone)
-  }
-  
-  
+    
   folderDistinct = paste(FolderRoot, "/Datasets/Distinct", sep="")
   if(dir.exists(folderDistinct) == TRUE){
     setwd(folderDistinct)
@@ -219,7 +207,6 @@ directories <- function(){
   retorno$folderILS = folderILS
   retorno$folderCSV = folderCSV
   retorno$folderDatasets = folderDatasets
-  retorno$folderAlone = folderAlone
   retorno$folderDistinct = folderDistinct
   
   # return files
@@ -232,7 +219,6 @@ directories <- function(){
   retorno$dirILS = dirILS
   retorno$dirCSV = dirCSV
   retorno$dirDatasets = dirDatasets
-  retorno$dirAlone = dirAlone
   retorno$dirDistinct = dirDistinct
   
   # return numbers
@@ -244,7 +230,6 @@ directories <- function(){
   retorno$n_IL = n_IL
   retorno$n_ILS = n_ILS
   retorno$n_CSV = n_CSV
-  retorno$n_Alone = n_Alone
   retorno$n_Datasets = n_Datasets
   retorno$n_Distinct = n_Distinct
   
@@ -252,6 +237,7 @@ directories <- function(){
   
   gc()
 }
+
 
 
 
@@ -298,6 +284,7 @@ infoDataSet <- function(dataset){
 
 
 
+
 ##################################################################################################
 # FUNCTION FOLD NAMES                                                                            #
 # Objective:                                                                                     #
@@ -311,6 +298,7 @@ infoDataSet <- function(dataset){
 folderNames <- function(filenames, tipo){
   folderNames = filenames
   if(tipo == "train"){
+    # -train.csv
     j = 0
     for(j in 1:length(folderNames)){
       a = str_length(folderNames[j])
@@ -320,6 +308,7 @@ folderNames <- function(filenames, tipo){
       gc()
     }  
   } else if(tipo=="test"){
+    # -test.csv
     j = 0
     for(j in 1:length(folderNames)){
       a = str_length(folderNames[j])
@@ -329,10 +318,11 @@ folderNames <- function(filenames, tipo){
       gc()
     }
   } else {
+    # -all.csv
     j = 0
     for(j in 1:length(folderNames)){
       a = str_length(folderNames[j])
-      a = a - 4
+      a = a - 8
       folderNames[j] = str_sub(folderNames[j], end = a)  
       j = j + 1
       gc()
