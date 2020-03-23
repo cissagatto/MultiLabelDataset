@@ -36,6 +36,7 @@ if (sistema[1] == "Linux"){
   Folder = paste("C:/Users/", sistema[7], "/MultiLabelDataset", sep="")
   setwd(Folder)
 }
+
 setwd(Folder)
 FolderRoot = Folder
 
@@ -65,18 +66,6 @@ directories <- function(){
   
   retorno = list()
   
-  folderResults = paste(FolderRoot, "/Results", sep="")
-  if(dir.exists(folderResults) == TRUE){
-    setwd(folderResults)
-    dirResults = dir(folderResults)
-    n_Results = length(dirResults)
-  } else {
-    dir.create(folderResults)
-    setwd(folderResults)
-    dirResults = dir(folderResults)
-    n_Results = length(dirResults)
-  }
-  
   folderDatasets = paste(FolderRoot, "/Datasets", sep="")
   if(dir.exists(folderDatasets) == TRUE){
     setwd(folderDatasets)
@@ -100,19 +89,7 @@ directories <- function(){
     dirLS = dir(folderLS)
     n_LS = length(dirLS)
   }
-  
-  folderAS = paste(FolderRoot, "/Datasets/AttributesSpace", sep="")
-  if(dir.exists(folderAS) == TRUE){
-    setwd(folderAS)
-    dirAS = dir(folderAS)
-    n_AS = length(dirAS)
-  } else {
-    dir.create(folderAS)
-    setwd(folderAS)
-    dirAS = dir(folderAS)
-    n_AS = length(dirAS)
-  }
-  
+ 
   folderL = paste(FolderRoot, "/Datasets/Labels", sep="")
   if(dir.exists(folderL) == TRUE){
     setwd(folderL)
@@ -123,30 +100,6 @@ directories <- function(){
     setwd(folderL)
     dirL = dir(folderL)
     n_L = length(dirL)
-  }
-  
-  folderStatistics = paste(FolderRoot, "/Datasets/Statistics", sep="")
-  if(dir.exists(folderStatistics) == TRUE){
-    setwd(folderStatistics)
-    dirStatistics = dir(folderStatistics)
-    n_Statistics = length(dirStatistics)
-  } else {
-    dir.create(folderStatistics)
-    setwd(folderStatistics)
-    dirStatistics = dir(folderStatistics)
-    n_Statistics = length(dirStatistics)
-  }
-  
-  folderSummary = paste(FolderRoot, "/Datasets/Summary", sep="")
-  if(dir.exists(folderSummary) == TRUE){
-    setwd(folderSummary)
-    dirSummary = dir(getwd())
-    n_Summary = length(dirSummary)
-  } else {
-    dir.create(folderSummary)
-    setwd(folderSummary)
-    dirSummary = dir(folderSummary)
-    n_Summary = length(dirSummary)
   }
   
   folderIL = paste(FolderRoot, "/Datasets/InstancesPerLabels", sep="")
@@ -184,54 +137,60 @@ directories <- function(){
     dirCSV = dir(folderCSV)
     n_CSV = length(dirCSV)
   }
-    
-  folderDistinct = paste(FolderRoot, "/Datasets/Distinct", sep="")
-  if(dir.exists(folderDistinct) == TRUE){
-    setwd(folderDistinct)
-    dirDistinct = dir(folderDistinct)
-    n_Distinct = length(dirDistinct)
+  
+  folderStatistics = paste(FolderRoot, "/Datasets/Statistics", sep="")
+  if(dir.exists(folderStatistics) == TRUE){
+    setwd(folderStatistics)
+    dirStatistics = dir(folderStatistics)
+    n_Statistics = length(dirStatistics)
   } else {
-    dir.create(folderDistinct)
-    setwd(folderDistinct)
-    dirDistinct = dir(folderDistinct)
-    n_Distinct = length(dirDistinct)
+    dir.create(folderStatistics)
+    setwd(folderStatistics)
+    dirStatistics = dir(folderStatistics)
+    n_Statistics = length(dirStatistics)
+  }
+  
+  folderSummary = paste(FolderRoot, "/Datasets/Summary", sep="")
+  if(dir.exists(folderSummary) == TRUE){
+    setwd(folderSummary)
+    dirSummary = dir(getwd())
+    n_Summary = length(dirSummary)
+  } else {
+    dir.create(folderSummary)
+    setwd(folderSummary)
+    dirSummary = dir(folderSummary)
+    n_Summary = length(dirSummary)
   }
   
   # return folders
-  retorno$folderLS = folderLS
-  retorno$folderAS = folderAS
+  retorno$folderDatasets = folderDatasets
   retorno$folderL = folderL
-  retorno$folderStatistics = folderStatistics
-  retorno$folderSummary = folderSummary
+  retorno$folderLS = folderLS
   retorno$folderIL = folderIL
   retorno$folderILS = folderILS
   retorno$folderCSV = folderCSV
-  retorno$folderDatasets = folderDatasets
-  retorno$folderDistinct = folderDistinct
+  retorno$folderStatistics = folderStatistics
+  retorno$folderSummary = folderSummary
   
   # return files
-  retorno$dirLS = dirLS
-  retorno$dirAS = dirAS
+  retorno$dirDatasets = dirDatasets
   retorno$dirL = dirL
-  retorno$dirStatistics = dirStatistics
-  retorno$dirSummary = dirSummary
+  retorno$dirLS = dirLS
   retorno$dirIL = dirIL
   retorno$dirILS = dirILS
   retorno$dirCSV = dirCSV
-  retorno$dirDatasets = dirDatasets
-  retorno$dirDistinct = dirDistinct
+  retorno$dirStatistics = dirStatistics
+  retorno$dirSummary = dirSummary
   
   # return numbers
-  retorno$n_LS = n_LS
-  retorno$n_AS = n_AS
+  retorno$n_Datasets = n_Datasets
   retorno$n_L = n_L
-  retorno$n_Statistics = n_Statistics
-  retorno$n_Summary = n_Summary
+  retorno$n_LS = n_LS
   retorno$n_IL = n_IL
   retorno$n_ILS = n_ILS
   retorno$n_CSV = n_CSV
-  retorno$n_Datasets = n_Datasets
-  retorno$n_Distinct = n_Distinct
+  retorno$n_Statistics = n_Statistics
+  retorno$n_Summary = n_Summary
   
   return(retorno)
   
@@ -255,29 +214,22 @@ infoDataSet <- function(dataset){
   cat("\n FUNCAO INFO DATA SET \n")
   retorno = list()
   retorno$id = dataset$ID
-  retorno$ds = dataset$DS
   retorno$name = dataset$Name
-  retorno$domain = dataset$Domain
   retorno$instances = dataset$Instances
+  retorno$inputs = dataset$Inputs
   retorno$labels = dataset$Labels
-  retorno$predictiveAttributes = dataset$PredictiveAttributes
-  retorno$attributesTotal = dataset$AttributesTotal
+  retorno$LabelsSets = dataset$LabelsSets
+  retorno$single = dataset$Single
+  retorno$maxfreq = dataset$MaxFreq
+  retorno$card = dataset$Card
+  retorno$dens = dataset$Dens
+  retorno$mean = dataset$Mean
+  retorno$scumble = dataset$Scumble
+  retorno$tcs = dataset$TCS
   retorno$attStart = dataset$AttStart
   retorno$attEnd = dataset$AttEnd
   retorno$labStart = dataset$LabStart
   retorno$labEnd = dataset$LabEnd
-  retorno$nominal = dataset$Nominal
-  retorno$numeric = dataset$Numeric
-  retorno$cardinality = dataset$Dardinality
-  retorno$density = dataset$Density
-  retorno$distinct = dataset$Distinct
-  retorno$dimensionality = dataset$Dimensionality
-  retorno$xn = dataset$xn
-  retorno$yn = dataset$yn
-  retorno$gridn = dataset$gridn
-  retorno$xt = dataset$xt
-  retorno$yt = dataset$yt
-  retorno$gridt = dataset$gridt
   return(retorno)
 }
 
@@ -297,37 +249,14 @@ infoDataSet <- function(dataset){
 ##################################################################################################
 folderNames <- function(filenames, tipo){
   folderNames = filenames
-  if(tipo == "train"){
-    # -train.csv
-    j = 0
-    for(j in 1:length(folderNames)){
-      a = str_length(folderNames[j])
-      a = a - 10
-      folderNames[j] = str_sub(folderNames[j], end = a)  
-      j = j + 1
-      gc()
-    }  
-  } else if(tipo=="test"){
-    # -test.csv
-    j = 0
-    for(j in 1:length(folderNames)){
-      a = str_length(folderNames[j])
-      a = a - 9
-      folderNames[j] = str_sub(folderNames[j], end = a)  
-      j = j + 1
-      gc()
-    }
-  } else {
-    # -all.csv
-    j = 0
-    for(j in 1:length(folderNames)){
-      a = str_length(folderNames[j])
-      a = a - 8
-      folderNames[j] = str_sub(folderNames[j], end = a)  
-      j = j + 1
-      gc()
-    }
-  }
+  j = 0
+  for(j in 1:length(folderNames)){
+    a = str_length(folderNames[j])
+    a = a - 18
+    folderNames[j] = str_sub(folderNames[j], end = a)  
+    j = j + 1
+    gc()
+  }  
   return(folderNames)
 }
 
@@ -355,4 +284,3 @@ fileNamesFinal <- function(filenames){
   }
   return(fnf)
 }
-
