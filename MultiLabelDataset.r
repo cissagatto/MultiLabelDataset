@@ -32,6 +32,9 @@ setwd(FolderRoot)
 
 
 
+
+
+
 ##################################################################################################
 # FUNCTION CARDINALITY                                                                           #
 # Objective:                                                                                     #
@@ -90,6 +93,7 @@ density <- function(classes){
   return(den)
   gc()
 }
+
 
 
 
@@ -199,13 +203,13 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   cat("\n\tobtendo diretorios")
   diretorios = directories()
   
-  # criando pasta para salvar o sumário do dataset
+  # criando pasta para salvar o sumÃ¡rio do dataset
   cat("\n\tcriando pasta sumario")
   setwd(diretorios$folderSummary)
   subFolderSu = paste(diretorios$folderSummary, "/", folderName, sep="")
   dir.create(subFolderSu)
   
-  # criando pasta para salvar a estatística do dataset
+  # criando pasta para salvar a estatÃ­stica do dataset
   cat("\n\tcriando pasta estatistica")
   setwd(diretorios$folderStatistics)
   subFolderSta = paste(diretorios$folderStatistics, "/", folderName, sep="")
@@ -224,7 +228,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   porcentagem = c(0)
   total = data.frame(rotulo, valor, porcentagem)  
   
-  # criando data frame para salvar o sumário do dataset
+  # criando data frame para salvar o sumÃ¡rio do dataset
   cat("\n\tcriando data frame final")
   soma_ = c(0)
   minimo_ = c(0)
@@ -261,7 +265,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   soma2 = data.frame(apply(arquivo, 2, sum))
   write.csv(soma2, paste("arquivo_rotulo_", conjunto, ".csv", sep=""))
   
-  # passando por todos os rótulos
+  # passando por todos os rÃ³tulos
   k = 1
   for(k in 1:labels){
     
@@ -275,7 +279,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     setwd(subFolderILS)
     write.csv(result, paste(label_, "_", conjunto, ".csv", sep=""))
     
-    # salvando informações de sumário
+    # salvando informaÃ§Ãµes de sumÃ¡rio
     setwd(subFolderSu)
     rotulo = label_
     valor = nrow(result)
@@ -284,14 +288,14 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     nome = paste(folderName, "_", label_, "_sumario_", conjunto, ".csv", sep="")
     write.csv(total, nome, append = TRUE)     
     
-    # salvando informações de estatística
+    # salvando informaÃ§Ãµes de estatÃ­stica
     setwd(subFolderSta)
     
     # soma por linha
     soma = data.frame(apply(result, 1, sum))
     write.csv(soma, paste(label_, "_instancia_soma_", conjunto, ".csv", sep=""))
     
-    # mÃƒÂ©dia por linha
+    # mÃƒÆ’Ã‚Â©dia por linha
     media = data.frame(apply(result, 1, mean))
     write.csv(media, paste(label_, "_instancia_media_", conjunto, ".csv", sep=""))
     
@@ -299,7 +303,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     mediana = data.frame(apply(result, 1, median))
     write.csv(mediana, paste(label_, "_instancia_mediana_", conjunto, ".csv", sep=""))
     
-    # desvio padrÃƒÂ£o por linha
+    # desvio padrÃƒÆ’Ã‚Â£o por linha
     desvioPadrao = data.frame(apply(result, 1, sd))
     write.csv(desvioPadrao, paste(label_, "_instancia_media_", conjunto, ".csv", sep=""))
     
@@ -307,11 +311,11 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     soma_ = data.frame(apply(result, 2, sum))
     names(soma_) = "soma"
     
-    # mÃƒÂ¡ximo por coluna
+    # mÃƒÆ’Ã‚Â¡ximo por coluna
     maximo_ = data.frame(apply(result, 2, max))
     names(maximo_) = "maximo"
     
-    # mÃƒnimo por coluna
+    # mÃƒÆ’nimo por coluna
     minimo_ = data.frame(apply(result, 2, min))
     names(minimo_) = "minimo"
     
@@ -323,7 +327,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     mediana_ = data.frame(apply(result, 2, median))
     names(mediana_) = "mediana"
     
-    # desvio padrÃƒÂ£o por coluna
+    # desvio padrÃƒÆ’Ã‚Â£o por coluna
     sd_ = data.frame(apply(result, 2, sd))
     names(sd_) = "desvioPadrao"
     
