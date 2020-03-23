@@ -47,12 +47,11 @@ diretorios = directories()
 conjunto = "train"
 
 fin = c(diretorios$dirCSV)
-fon = folderNames(c(fn), tipo = conjunto)
+fon = folderNames(c(fin), tipo = conjunto)
 fnf = fileNamesFinal(c(fon))
 
 setwd(FolderRoot)
-nome_ = paste("datasets-", conjunto, ".csv", sep="")
-datasets = read.csv(nome)
+datasets = data.frame(read.csv("datasets.csv"))
 
 dataset = c(0)
 card = c(0)
@@ -63,23 +62,23 @@ dados = data.frame(dataset, card, dens, dime, instancias)
 
 
 ####################################################
-# Separando os espaços                             #
+# Separando os espaÃ§os                             #
 ####################################################
 i = 1
 for(i in 1:diretorios$n_CSV){
-  cat("\n Dataset: ", fn[i], "\n")
+  nome = toString(fin[i])
+  cat("\n Dataset: ", nome , "\n")
+  
   ds = datasets[i,]
+  print(ds)
+  
   info = infoDataSet(ds)
+  print(info)
+  
   setwd(diretorios$folderCSV)
-  tudo = read.csv(fn[i])
+  tudo = read.csv(nome)
   instancias = nrow(tudo)
-  
-  # atributos previsores
-  cat("\nSeparando os atributos previsores!")
-  setwd(diretorios$folderAS)
-  atributos = data.frame(tudo[,info$attStart:info$attEnd])
-  write.csv(atributos, paste(fon[i], "_attributes_", conjunto, ".csv", sep=""), row.names = FALSE)
-  
+
   # atributos alvo
   cat("\nSeparando os atributos alvo!")
   setwd(diretorios$folderLS)
@@ -106,7 +105,7 @@ for(i in 1:diretorios$n_CSV){
   
   # salvando os numeros
   cat("\nSalvando as informacoes!")
-  dataset = fn[i]
+  dataset = nome
   dados = rbind(dados, data.frame(dataset, card, dens, dime, instancias))
   setwd(sf$Folder)
   write.csv(dados, "sumario_datasets_", conjunto, ".csv", append = TRUE)
@@ -114,30 +113,16 @@ for(i in 1:diretorios$n_CSV){
   # limpar
   cat("\nLimpando os objetos criados!")
   rm(tudo)
-  rm(atributos)
   rm(classes)
   rm(rotulos)
+  
+  instancesPerLabels(ds$ID[i], fon[i], fin[i], finf[i], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, ds$Labels, conjunto)  
+  
+  instancesPerLabelsSpace(ds$ID[i], fon[i], fin[i], fnf[i], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, ds$Labels, conjunto)  
   
   cat("\nIncrementando!")
   i = i + 1
   
   cat("\nColetando lixo!\n")
-  gc()
-}
-
-
-##################################################################
-# Separando as instancias por Label e gerando estatísticas       #
-##################################################################
-j = 1
-for(j in 1:diretorios$n_CSV){
-  cat("\n Dataset: ", fn[j], "\n")
-  ds = datasets[j,]
-  info = infoDataSet(ds)  
-  instancesPerLabels(ds$ID[j], fon[j], fn[j], fnf[j], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, 
-                     ds$Labels, conjunto)  
-  instancesPerLabelsSpace(ds$ID[j], fon[j], fn[j], fnf[j], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, 
-                          ds$Labels, conjunto)  
-  j = j + 1
   gc()
 }
