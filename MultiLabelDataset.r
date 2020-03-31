@@ -33,8 +33,6 @@ setwd(FolderRoot)
 
 
 
-
-
 ##################################################################################################
 # FUNCTION CARDINALITY                                                                           #
 # Objective:                                                                                     #
@@ -203,13 +201,13 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   cat("\n\tobtendo diretorios")
   diretorios = directories()
   
-  # criando pasta para salvar o sumÃ¡rio do dataset
+  # criando pasta para salvar o sumÃƒÂ¡rio do dataset
   cat("\n\tcriando pasta sumario")
   setwd(diretorios$folderSummary)
   subFolderSu = paste(diretorios$folderSummary, "/", folderName, sep="")
   dir.create(subFolderSu)
   
-  # criando pasta para salvar a estatÃ­stica do dataset
+  # criando pasta para salvar a estatÃƒÂ­stica do dataset
   cat("\n\tcriando pasta estatistica")
   setwd(diretorios$folderStatistics)
   subFolderSta = paste(diretorios$folderStatistics, "/", folderName, sep="")
@@ -228,7 +226,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   porcentagem = c(0)
   total = data.frame(rotulo, valor, porcentagem)  
   
-  # criando data frame para salvar o sumÃ¡rio do dataset
+  # criando data frame para salvar o sumÃƒÂ¡rio do dataset
   cat("\n\tcriando data frame final")
   soma_ = c(0)
   minimo_ = c(0)
@@ -251,7 +249,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   cat("\n\tabrindo arquivo")
   setwd(diretorios$folderLS)
   # corel-5k-sparse_labels_test
-  namae = paste(folderName, "_labels_test.csv", sep="")
+  namae = paste(folderName, "_labels_", conjunto, ".csv", sep="")
   arquivo = data.frame(read.csv(namae, stringsAsFactors = F))
  
   cat("\n\tsomando linhas")
@@ -265,7 +263,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   soma2 = data.frame(apply(arquivo, 2, sum))
   write.csv(soma2, paste("arquivo_rotulo_", conjunto, ".csv", sep=""))
   
-  # passando por todos os rÃ³tulos
+  # passando por todos os rÃƒÂ³tulos
   k = 1
   for(k in 1:labels){
     
@@ -279,7 +277,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     setwd(subFolderILS)
     write.csv(result, paste(label_, "_", conjunto, ".csv", sep=""))
     
-    # salvando informaÃ§Ãµes de sumÃ¡rio
+    # salvando informaÃƒÂ§ÃƒÂµes de sumÃƒÂ¡rio
     setwd(subFolderSu)
     rotulo = label_
     valor = nrow(result)
@@ -288,14 +286,14 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     nome = paste(folderName, "_", label_, "_sumario_", conjunto, ".csv", sep="")
     write.csv(total, nome, append = TRUE)     
     
-    # salvando informaÃ§Ãµes de estatÃ­stica
+    # salvando informaÃƒÂ§ÃƒÂµes de estatÃƒÂ­stica
     setwd(subFolderSta)
     
     # soma por linha
     soma = data.frame(apply(result, 1, sum))
     write.csv(soma, paste(label_, "_instancia_soma_", conjunto, ".csv", sep=""))
     
-    # mÃƒÆ’Ã‚Â©dia por linha
+    # mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©dia por linha
     media = data.frame(apply(result, 1, mean))
     write.csv(media, paste(label_, "_instancia_media_", conjunto, ".csv", sep=""))
     
@@ -303,7 +301,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     mediana = data.frame(apply(result, 1, median))
     write.csv(mediana, paste(label_, "_instancia_mediana_", conjunto, ".csv", sep=""))
     
-    # desvio padrÃƒÆ’Ã‚Â£o por linha
+    # desvio padrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o por linha
     desvioPadrao = data.frame(apply(result, 1, sd))
     write.csv(desvioPadrao, paste(label_, "_instancia_media_", conjunto, ".csv", sep=""))
     
@@ -311,11 +309,11 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     soma_ = data.frame(apply(result, 2, sum))
     names(soma_) = "soma"
     
-    # mÃƒÆ’Ã‚Â¡ximo por coluna
+    # mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ximo por coluna
     maximo_ = data.frame(apply(result, 2, max))
     names(maximo_) = "maximo"
     
-    # mÃƒÆ’nimo por coluna
+    # mÃƒÆ’Ã†â€™nimo por coluna
     minimo_ = data.frame(apply(result, 2, min))
     names(minimo_) = "minimo"
     
@@ -327,7 +325,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
     mediana_ = data.frame(apply(result, 2, median))
     names(mediana_) = "mediana"
     
-    # desvio padrÃƒÆ’Ã‚Â£o por coluna
+    # desvio padrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o por coluna
     sd_ = data.frame(apply(result, 2, sd))
     names(sd_) = "desvioPadrao"
     
@@ -359,4 +357,10 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   cat("\n|========== END INSTANCES PER LABELS SPACE ==========|\n")
   
   gc()
+}
+
+
+
+kFolds <- function(){
+  
 }

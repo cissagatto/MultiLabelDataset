@@ -162,6 +162,18 @@ directories <- function(){
     n_Summary = length(dirSummary)
   }
   
+  folderFolds = paste(FolderRoot, "/Datasets/10-Folds", sep="")
+  if(dir.exists(folderFolds) == TRUE){
+    setwd(folderFolds)
+    dirFolds = dir(getwd())
+    n_Folds = length(dirFolds)
+  } else {
+    dir.create(folderFolds)
+    setwd(folderFolds)
+    dirFolds = dir(folderFolds)
+    n_Folds = length(dirFolds)
+  }
+  
   # return folders
   retorno$folderDatasets = folderDatasets
   retorno$folderL = folderL
@@ -171,6 +183,7 @@ directories <- function(){
   retorno$folderCSV = folderCSV
   retorno$folderStatistics = folderStatistics
   retorno$folderSummary = folderSummary
+  retorno$folderFolds = folderFolds
   
   # return files
   retorno$dirDatasets = dirDatasets
@@ -181,6 +194,7 @@ directories <- function(){
   retorno$dirCSV = dirCSV
   retorno$dirStatistics = dirStatistics
   retorno$dirSummary = dirSummary
+  retorno$dirFolds = dirFolds
   
   # return numbers
   retorno$n_Datasets = n_Datasets
@@ -191,6 +205,7 @@ directories <- function(){
   retorno$n_CSV = n_CSV
   retorno$n_Statistics = n_Statistics
   retorno$n_Summary = n_Summary
+  retorno$n_Folds = n_Folds
   
   return(retorno)
   

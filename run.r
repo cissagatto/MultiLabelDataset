@@ -15,6 +15,12 @@
 # EXTERNAL LIBRARIES                               #
 ####################################################
 library("stringr")
+library("plyr")
+library("dplyr")
+library("tidyverse")
+library("utiml")
+library("mldr")
+
 
 
 
@@ -62,7 +68,7 @@ dados = data.frame(dataset, card, dens, dime, instancias)
 
 
 ####################################################
-# Separando os espaÃ§os                             #
+# Separando os espaÃƒÂ§os                             #
 ####################################################
 i = 1
 for(i in 1:diretorios$n_CSV){
@@ -109,19 +115,43 @@ for(i in 1:diretorios$n_CSV){
   dados = rbind(dados, data.frame(dataset, card, dens, dime, instancias))
   setwd(sf$Folder)
   write.csv(dados, "sumario_datasets_", conjunto, ".csv", append = TRUE)
+
+  
+  instancesPerLabels(ds$ID[i], fon[i], fin[i], finf[i], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, ds$Labels, conjunto)  
+  
+  instancesPerLabelsSpace(ds$ID[i], fon[i], fin[i], fnf[i], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, ds$Labels, conjunto)  
+  
+  
+  FolderE = paste(diretorios$folderFolds, "/", fon[i], sep="")
+  dir.create(FolderE)
+  setwd(FolderE)
+  
+  mdata = mldr_from_dataframe(tudo, labelIndices = c(ds$LabStart, ds$LabEnd))
+  kfcv <- create_kfold_partition(mdata, k=10, "iterative")
+  write_rds(kfcv, "crossvalidation.rds")
+
+  e = 1
+  for(e in 1:10){
+    pasta = partition_fold(kfcv, 1)
+    setwd(FolderE)
+    p1 = data.frame(pasta$train$dataset)
+    w1 = paste(fon[i], "_", conjunto, "_fold_", e, "_train.csv", sep="")
+    write.csv(p1,w1)
+    p2 = data.frame(pasta$test$dataset)
+    w2 = paste(fon[i],"_fold_", e, "_test.csv", sep="")
+    write.csv(p2,w2)
+    e = e + 1
+    gc()
+  }
+  
+  cat("\nIncrementando!")
+  i = i + 1
   
   # limpar
   cat("\nLimpando os objetos criados!")
   rm(tudo)
   rm(classes)
   rm(rotulos)
-  
-  instancesPerLabels(ds$ID[i], fon[i], fin[i], finf[i], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, ds$Labels, conjunto)  
-  
-  instancesPerLabelsSpace(ds$ID[i], fon[i], fin[i], fnf[i], ds$AttStart, ds$AttEnd, ds$LabStart, ds$LabEnd, ds$Instances, ds$Labels, conjunto)  
-  
-  cat("\nIncrementando!")
-  i = i + 1
   
   cat("\nColetando lixo!\n")
   gc()
