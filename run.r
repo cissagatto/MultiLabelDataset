@@ -131,6 +131,7 @@ for(i in 1:diretorios$n_CSV){
   write_rds(kfcv, "crossvalidation.rds")
 
   e = 1
+  set.seed(1234)
   for(e in 1:10){
     pasta = partition_fold(kfcv, 1)
     setwd(FolderE)

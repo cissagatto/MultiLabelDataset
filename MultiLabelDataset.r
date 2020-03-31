@@ -207,7 +207,7 @@ instancesPerLabelsSpace <- function(id, folderName, fileName, fileNameFinal, att
   subFolderSu = paste(diretorios$folderSummary, "/", folderName, sep="")
   dir.create(subFolderSu)
   
-  # criando pasta para salvar a estatÃƒÂ­stica do dataset
+  # criando pasta para salvar a estatÃƒÂstica do dataset
   cat("\n\tcriando pasta estatistica")
   setwd(diretorios$folderStatistics)
   subFolderSta = paste(diretorios$folderStatistics, "/", folderName, sep="")
